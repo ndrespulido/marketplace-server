@@ -10,45 +10,47 @@ export class ProductsController{
     }
 
     @Post()
-    addProduct(@Body('title')productTitle:string
+    async addProduct(@Body('title')productTitle:string
     ,@Body('size')productSize:number
     ,@Body('description')productDescription:string
     ,@Body('price')productPrice:number    
     ){
-        const generatedId = this.productsService.insertProduct(
+        const generatedId = await this.productsService.insertProduct(
             productTitle, productSize            
             ,productDescription,productPrice 
         );
-        return {id: generatedId};
+        return {id:generatedId};
     }
 
     @Get()
-    getAllProducts(){
-        return this.productsService.getProducts();
+    async getAllProducts(){
+        const products = await this.productsService.getProducts();
+        return products; 
     }
 
     @Get(':id')
-    getProduct(@Param('id') productId:string){
-        return this.productsService.getSingleProduct(productId);
+    async getProduct(@Param('id') productId:string){
+        return await this.productsService.getSingleProduct(productId);
     }
 
     @Patch(':id')
-    updateProduct(@Param('id') prodId: string,
+    async updateProduct(@Param('id') prodId: string,
     @Body('title') productTitle: string,
     @Body('description')productDescription: string,
     @Body('price')producPrice:number,
     @Body('size') producteSize
     
     ){
-        this.productsService.updateProduct(prodId,productTitle,
+        await this.productsService.updateProduct(prodId,productTitle,
             productDescription,producPrice,producteSize);
         return null;
     }
 
     @Delete(':id')
-    removeProduct(@Param('id') productId:string)
+    async removeProduct(@Param('id') productId:string)
     {
-        return this.productsService.deleteProduct(productId);
+        await this.productsService.deleteProduct(productId);
+        return null;
     }
 
 }
