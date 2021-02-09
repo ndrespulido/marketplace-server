@@ -5,7 +5,7 @@ import { VendorModule } from './marketplace/vendor/vendor.module';
 import { ClientModule } from './marketplace/client/client.module';
 import {ProductsModule} from './marketplace/products/products.module';
 
-var connectionString = "mongodb://localhost:27017/market-comply";
+var connectionString = "mongodb+srv://poc-backend:jiGklYRU6ExZrO49@market-poc.s2ki9.mongodb.net/market-comply?retryWrites=true&w=majority";
 
 @Module({
   imports: [ProductsModule,UserModule, VendorModule, ClientModule, MongooseModule.forRoot(connectionString)]

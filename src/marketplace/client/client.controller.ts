@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Post, Put, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Post, Put, Query, Res } from '@nestjs/common';
 import { ClientService } from './client.service';
 import { Client } from '../repository/schemas/client.schema';
 
@@ -21,15 +21,15 @@ export class ClientController {
     }
 
 
-    @Get('findByUsername')
-    async findById(@Res() res, @Query('username') username: string) {
+    @Get(':username')
+    async findById(@Res() res, @Param('username') username: string) {
         const client = await this.clientService.findByUsername(username);
         if (!client) throw new NotFoundException('Login does not exist, or wrong password!');
         return res.status(HttpStatus.OK).json(client);
     }
 
-    @Put('/update')
-    async update(@Res() res, @Query('username') username: string, @Body() ClientEdit: Client) {
+    @Put(':username')
+    async update(@Res() res, @Param('username') username: string, @Body() ClientEdit: Client) {
         const ClientResponse = await this.clientService.update(username, ClientEdit);
         if (!ClientResponse) throw new NotFoundException('Clientname does not exist!');
         return res.status(HttpStatus.OK).json({
@@ -38,8 +38,8 @@ export class ClientController {
         });
     }
 
-    @Delete('/delete')
-    async delete(@Res() res, @Query('Clientname') Clientname: string) {
+    @Delete(':username')
+    async delete(@Res() res, @Param('Clientname') Clientname: string) {
         const ClientResponse = await this.clientService.delete(Clientname);
         if (!ClientResponse) throw new NotFoundException('Client does not exist');
         return res.status(HttpStatus.OK).json({

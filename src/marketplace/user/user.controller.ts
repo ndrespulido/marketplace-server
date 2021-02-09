@@ -7,7 +7,7 @@ import { Body, Param, Query, Res } from '@nestjs/common/decorators/http/route-pa
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
-    @Post('/create')
+    @Post()
     async addCustomer(@Res() res, @Body() user: User) {
         const newUser = await this.userService.create(user);
         return res.status(HttpStatus.OK).json({
@@ -22,14 +22,14 @@ export class UserController {
     }    
 
     @Get('/login')
-    async findById(@Res() res, @Query('username') username: string, @Query('password') password: string) {
+    async findById(@Res() res, @Param('username') username: string, @Param('password') password: string) {
         const user = await this.userService.login(username, password);
         if (!user) throw new NotFoundException('Login does not exist, or wrong password!');
         return res.status(HttpStatus.OK).json(user);
     }
 
-    @Put('/update')
-    async update(@Res() res, @Query('username') username: string, @Body() userEdit: User) {
+    @Put(':username')
+    async update(@Res() res, @Param('username') username: string, @Body() userEdit: User) {
         const userResponse = await this.userService.update(username, userEdit);
         if (!userResponse) throw new NotFoundException('username does not exist!');
         return res.status(HttpStatus.OK).json({
@@ -38,8 +38,8 @@ export class UserController {
         });
     }
 
-    @Delete('/delete')
-    async delete(@Res() res, @Query('username') username: string) {
+    @Delete(':username')
+    async delete(@Res() res, @Param('username') username: string) {
         const userResponse = await this.userService.delete(username);
         if (!userResponse) throw new NotFoundException('User does not exist');
         return res.status(HttpStatus.OK).json({
