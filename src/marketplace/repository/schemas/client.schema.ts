@@ -10,5 +10,7 @@ export class Client {
 	lastname: string;
 	@Prop()
 	bithdate: Date;
+	@Prop()
+	username: string;
 }
 export const ClientSchema = SchemaFactory.createForClass(Client);
