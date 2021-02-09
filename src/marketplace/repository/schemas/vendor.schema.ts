@@ -8,5 +8,7 @@ export class Vendor {
 	name: string;
 	@Prop()
 	siret: string;
+	@Prop()
+	username: string;
 }
 export const VendorSchema = SchemaFactory.createForClass(Vendor);
