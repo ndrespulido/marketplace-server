@@ -42,7 +42,7 @@ export class UserService {
                     name: userDto.vendor.companyName,
                     siret: userDto.vendor.siret
                 };
-                var newVendor = this.repository.createClient(registerClient);
+                var newVendor = this.repository.createVendor(registerVendor);
                 break;
             default:
         }

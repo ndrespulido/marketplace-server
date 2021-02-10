@@ -56,8 +56,8 @@ export class UserRepository implements UserRepositoryInterface {
 
     //Vendor
     async createVendor(vendor: Vendor): Promise<any> {
-        const newClient = await this.vendorModel.create(vendor);
-        return newClient.save();
+        const newVendor = await this.vendorModel.create(vendor);
+        return newVendor.save();
     }
 
     async findVendorByEmail(email): Promise<Vendor> {
