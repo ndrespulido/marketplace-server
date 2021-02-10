@@ -9,8 +9,8 @@ export class Client {
 	@Prop()
 	lastname: string;
 	@Prop()
-	bithdate: Date;
+	birthdate: Date;
 	@Prop()
-	username: string;
+	email: string;
 }
 export const ClientSchema = SchemaFactory.createForClass(Client);
