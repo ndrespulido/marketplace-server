@@ -3,7 +3,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './marketplace/user/user.module';
 import { ProductsModule } from './marketplace/products/products.module';
 
-const connectionString = "mongodb+srv://poc-backend:jiGklYRU6ExZrO49@market-poc.s2ki9.mongodb.net/market-comply?retryWrites=true&w=majority";
+require("dotenv").config();
+const connectionString = process.env.CONNECTION_STRING;
+
 
 @Module({
     imports: [ProductsModule, UserModule, MongooseModule.forRoot(connectionString)]
