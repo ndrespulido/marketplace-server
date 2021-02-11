@@ -27,7 +27,6 @@ export class VendorController {
         return this.vendorService.findAll();
     }
 
-
     @Get(':username')
     async findById(@Res() res, @Param('username') username: string) {
         const Vendor = await this.vendorService.findByUsername(username);

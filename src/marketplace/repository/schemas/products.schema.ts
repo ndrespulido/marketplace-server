@@ -1,9 +1,20 @@
-// import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-// import { Document } from 'mongoose';
-// export type ProductsDocument = Products & Document;
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+export type ProductDocument = Product & Document;
 
-// @Schema()
-// export class Products {
-
-// }
-// export const ProductsSchema = SchemaFactory.createForClass(Products);
+@Schema()
+export class Product {
+	@Prop()
+	title: string;
+	@Prop()
+	reference: string;
+	@Prop()
+	description: string;
+	@Prop()
+	price: number;
+	@Prop()
+	stock: number;
+	@Prop()
+	vendorEmail: string;
+}
+export const ProductSchema = SchemaFactory.createForClass(Product);

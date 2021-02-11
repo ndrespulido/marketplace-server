@@ -1,14 +1,14 @@
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
-import { ProductSchema } from './product.model';
-import {ProductsController} from './products.controller';
-import { ProductsService } from './products.service';
+import { Product, ProductSchema } from '../repository/schemas/products.schema';
+import { ProductRepository } from './infrastructure/repository/product.repository';
+import { ProductsService } from './infrastructure/services/products.service';
+import { ProductsController } from './interface/controller/products.controller';
 
-@Module ({
-    imports: [ProductsModule,MongooseModule.forFeature([{name:'Product',schema:ProductSchema}])],
+@Module({
+    imports: [MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }])],
     controllers: [ProductsController],
-    providers: [ProductsService]
-
+    providers: [{ provide: 'ProductRepositoryInterface', useClass: ProductRepository }, ProductsService]
 })
 
 export class ProductsModule {}  
