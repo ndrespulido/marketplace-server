@@ -29,6 +29,7 @@
     "@nestjs/swagger": "^4.7.12",
     "@types/passport": "^1.0.6",
     "class-validator": "^0.13.1",
+    "dotenv": "^8.2.0",
     "mongoose": "^5.11.15",
     "passport": "^0.4.1",
     "passport-headerapikey": "^1.2.2",
