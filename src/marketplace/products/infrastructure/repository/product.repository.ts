@@ -26,9 +26,8 @@ export class ProductRepository implements ProductRepositoryInterface {
         return product;
     }
 
-    async findByVendor(vendorEmail: string): Promise<Product> {
-        const product = await this.productModel.findOne({ vendorEmail: vendorEmail }).exec();
-        return product;
+    async findByVendor(vendorEmail: string): Promise<Product[]> {
+        return this.productModel.find({ vendorEmail: vendorEmail }).exec();
     }
 
     async update(reference: string, productUpdate: Product): Promise<any> {

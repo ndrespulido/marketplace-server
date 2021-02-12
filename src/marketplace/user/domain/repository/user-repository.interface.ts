@@ -2,28 +2,12 @@ import { Client } from '../../../repository/schemas/client.schema';
 import { User } from '../../../repository/schemas/user.schema';
 import { Vendor } from "../../../repository/schemas/vendor.schema";
 
-
-/**
- * Implement this repository for user storage
- */
 export interface UserRepositoryInterface {
-    /**
-     * Create a user and register it into the database
-     * @param user
-     */
+
     create(user: User): Promise<User>;
 
-    /**
-     * Implement this function to retrieve the list of users    
-     * @throws UserNotFoundException
-     */
     findAll(): Promise<User[]>;
 
-    /**
-     * Finds a user by its email
-     * @param email
-     * @throws UserNotFoundException
-     */
     findByEmail(email: string): Promise<User>;
 
     login(email: string, password: string): Promise<User>;
@@ -42,8 +26,6 @@ export interface UserRepositoryInterface {
 
     findVendorByEmail(email): Promise<Vendor>;
 
-    updateVendor(email: string, vendorUpdate: Vendor): Promise<any>;
-
-    
+    updateVendor(email: string, vendorUpdate: Vendor): Promise<any>;   
 
 }

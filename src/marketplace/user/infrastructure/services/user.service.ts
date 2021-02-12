@@ -8,6 +8,7 @@ import { Client } from '../../../repository/schemas/client.schema';
 import { Vendor } from '../../../repository/schemas/vendor.schema';
 import { ClientDto } from '../../interface/dto/client.dto';
 import { VendorDto } from '../../interface/dto/vendor.dto';
+import { LoginDto } from '../../interface/dto/login.dto';
 
 @Injectable()
 export class UserService {
@@ -119,7 +120,7 @@ export class UserService {
         return await this.userToUserDto(user);
     }
 
-    //async login(username, password): Promise<User> {
+    //async login(username, password): Promise<LoginDto> {
     //    const customer = await this.userModel.findOne({ username: username, password: password }).exec();
     //    return customer;
     //}
