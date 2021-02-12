@@ -18,6 +18,7 @@ export class ProductsService {
             title: productDto.title,
             reference: productDto.reference,
             description: productDto.description,
+            imageUrl: productDto.imageUrl,
             price: productDto.price,
             stock: productDto.price,
             vendorEmail: productDto.vendorEmail
@@ -37,9 +38,11 @@ export class ProductsService {
                 title: product.title,
                 reference: product.reference,
                 description: product.description,
+                imageUrl: product.imageUrl,
                 price: product.price,
                 stock: product.price,
-                vendorEmail: product.vendorEmail
+                vendorEmail: product.vendorEmail,
+                vendorName: product.vendorEmail
             };
             productListDto.push(productDto);
         }
@@ -54,9 +57,11 @@ export class ProductsService {
             title: product.title,
             reference: product.reference,
             description: product.description,
+            imageUrl: product.imageUrl,
             price: product.price,
             stock: product.price,
-            vendorEmail: product.vendorEmail
+            vendorEmail: product.vendorEmail,
+            vendorName: product.vendorEmail
         };
         return productDto;
     }

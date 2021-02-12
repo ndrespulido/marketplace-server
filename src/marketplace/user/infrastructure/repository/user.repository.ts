@@ -1,6 +1,7 @@
 
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
+import { response } from "express";
 import { Model } from "mongoose";
 import { Client, ClientDocument } from "../../../repository/schemas/client.schema";
 import { User, UserDocument } from '../../../repository/schemas/user.schema';
@@ -35,12 +36,15 @@ export class UserRepository implements UserRepositoryInterface {
         return customer;
     }
 
-    async update(email: string, UserUpdate: User): Promise<any> {
+    async updateUser(email: string, UserUpdate: User): Promise<any> {
         return await this.userModel.findOneAndUpdate({ email: email }, UserUpdate, { new: true }).exec();
     }
 
-    async delete(email: string): Promise<any> {
-        return await this.userModel.findOneAndRemove({ email: email });
+    async deleteUser(email: string): Promise<any> {
+        const response = await this.userModel.findOneAndRemove({ email: email });
+        await this.vendorModel.findOneAndRemove({ email: email });
+        await this.clientModel.findOneAndRemove({ email: email });
+        return response;
     }
 
     //Client
@@ -54,6 +58,10 @@ export class UserRepository implements UserRepositoryInterface {
         return customer;
     }
 
+    async updateClient(email: string, clientUpdate: Client): Promise<any> {
+        return await this.clientModel.findOneAndUpdate({ email: email }, clientUpdate, { new: true }).exec();
+    }
+
     //Vendor
     async createVendor(vendor: Vendor): Promise<any> {
         const newVendor = await this.vendorModel.create(vendor);
@@ -63,5 +71,9 @@ export class UserRepository implements UserRepositoryInterface {
     async findVendorByEmail(email): Promise<Vendor> {
         const vendor = await this.vendorModel.findOne({ email: email }).exec();
         return vendor;
+    }
+
+    async updateVendor(email: string, vendorUpdate: Vendor): Promise<any> {
+        return await this.vendorModel.findOneAndUpdate({ email: email }, vendorUpdate, { new: true }).exec();
     }
 }

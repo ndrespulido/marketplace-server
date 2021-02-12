@@ -37,25 +37,25 @@ export class UserController {
     //    return res.status(HttpStatus.OK).json(user);
     //}
 
-    //@Put(':username')
-    //async update(@Res() res, @Param('username') username: string, @Body() userEdit: User) {
-    //    const userResponse = await this.userService.update(username, userEdit);
-    //    if (!userResponse) throw new NotFoundException('username does not exist!');
-    //    return res.status(HttpStatus.OK).json({
-    //        message: 'User has been successfully updated',
-    //        userResponse
-    //    });
-    //}
+    @Put(':email')
+    async update(@Res() res, @Param('email') email: string, @Body() userEdit: UserDto) {
+        const userResponse = await this.userService.update(email, userEdit);
+        if (!userResponse) throw new NotFoundException('username does not exist!');
+        return res.status(HttpStatus.OK).json({
+            message: 'User has been successfully updated',
+            userResponse
+        });
+    }
 
-    //@Delete(':username')
-    //async delete(@Res() res, @Param('username') username: string) {
-    //    const userResponse = await this.userService.delete(username);
-    //    if (!userResponse) throw new NotFoundException('User does not exist');
-    //    return res.status(HttpStatus.OK).json({
-    //        message: 'User has been deleted',
-    //        userResponse
-    //    })
-    //}
+    @Delete(':email')
+    async delete(@Res() res, @Param('email') email: string) {
+        const userResponse = await this.userService.deleteUser(email);
+        if (!userResponse) throw new NotFoundException('User does not exist');
+        return res.status(HttpStatus.OK).json({
+            message: 'User has been deleted',
+            userResponse
+        })
+    }
 
 
 }
