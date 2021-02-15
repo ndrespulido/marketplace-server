@@ -82,7 +82,7 @@ export class ProductsService {
         let vendorName: string = '';
         if (product.vendorEmail) {
             const vendor = await this.userRepository.findVendorByEmail(product.vendorEmail);
-            if (!vendor) vendorName = vendor.name ? vendor.name : '';
+            if (vendor && vendor.name) vendorName = vendor.name;
         }
         let productDto: ProductDto = {
             title: product.title,
