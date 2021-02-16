@@ -1,9 +1,11 @@
-import { Controller, Post ,Get, Body,Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put} from "@nestjs/common";
+import { Controller, Post ,Get, Body,Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger} from "@nestjs/common";
 import { ProductsService } from "../../infrastructure/services/products.service";
 import { ProductDto } from "../dto/product.dto";
 
 @Controller('products')
 export class ProductsController{
+    private readonly logger = new Logger(ProductsController.name);
+
     
     constructor(private readonly productsService: ProductsService){
     }
@@ -42,22 +44,27 @@ export class ProductsController{
 
     @Put(':reference')
     async update(@Res() res, @Param('reference') reference: string, @Body() productEdit: ProductDto) {
+        
+        const product = await this.productsService.findByReference(reference);
+        if (!product) throw new NotFoundException('Product not found!');
+
         const response = await this.productsService.update(reference, productEdit);
-        if (!response) throw new NotFoundException('username does not exist!');
+
+        if (!response) throw new NotFoundException('product does not exist!');
         return res.status(HttpStatus.OK).json({
-            message: 'User has been successfully updated',
+            message: 'Product has been successfully updated',
             response
         });
     }
 
-    //@Delete(':reference')
-    //async delete(@Res() res, @Param('reference') reference: string) {
-    //    const response = await this.productsService.delete(reference);
-    //    if (!response) throw new NotFoundException('Product does not exist');
-    //    return res.status(HttpStatus.OK).json({
-    //        message: 'User has been deleted',
-    //        response
-    //    })
-    //}
+    @Delete(':reference')
+    async delete(@Res() res, @Param('reference') reference: string) {
+        const response = await this.productsService.delete(reference);
+        if (!response) throw new NotFoundException('Product does not exist');
+        return res.status(HttpStatus.OK).json({
+            message: 'Product has been deleted',
+            response
+        })
+    }
 
 }

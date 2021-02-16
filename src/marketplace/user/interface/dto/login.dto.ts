@@ -1,15 +1,17 @@
-import { IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty } from "class-validator";
 import { ProductDto } from "../../../products/interface/dto/product.dto";
 import { ClientDto } from "./client.dto";
 import { VendorDto } from "./vendor.dto";
+import { ApiProperty } from '@nestjs/swagger';
+import { UserDto } from "./user.dto";
 
 export class LoginDto {
 
-    @IsNotEmpty()
+    @ApiProperty()
+    @IsEmail()
     readonly email: string;
 
+    @ApiProperty()
     @IsNotEmpty()
-    readonly role: string;
-
-    readonly products: ProductDto[];
+    readonly password: string;
 }

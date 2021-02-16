@@ -1,12 +1,19 @@
-import { Controller, Delete, Get, HttpStatus, NotFoundException, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, HttpStatus, Logger, NotFoundException, Post, Put } from '@nestjs/common';
 import { Body, Param, Query, Res } from '@nestjs/common/decorators/http/route-params.decorator';
+import { ProductsService } from '../../../products/infrastructure/services/products.service';
+import { ProductDto } from '../../../products/interface/dto/product.dto';
 import { User } from '../../../repository/schemas/user.schema';
 import { UserService } from '../../infrastructure/services/user.service';
+import { HomeDto } from '../dto/home.dto';
+import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UserService, private readonly productsService: ProductsService) { }
+
+
+    private readonly logger = new Logger(UserController.name);
 
     @Post()
     async create(@Res() res, @Body() user: UserDto) {
@@ -30,12 +37,43 @@ export class UserController {
         return this.userService.findAll();
     }
 
-    //@Get('/login')
-    //async findById(@Res() res, @Param('username') username: string, @Param('password') password: string) {
-    //    const user = await this.userService.login(username, password);
-    //    if (!user) throw new NotFoundException('Login does not exist, or wrong password!');
-    //    return res.status(HttpStatus.OK).json(user);
-    //}
+    @Post('/login')
+    async findById(@Res() res, @Body() loginDto: LoginDto) {
+        this.logger.log(loginDto.email + ',' + loginDto.password);
+        const userExists = await this.userService.findByEmail(loginDto.email);
+        if (!userExists) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Email doesn't exists."
+            })
+        }
+        if (userExists && userExists.password != null && userExists.password != loginDto.password) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Wrong email password combination."
+            })
+        }
+
+        let homeDto: HomeDto = {
+            user: userExists,
+            products: await this.getUserProducts(userExists)
+        }
+
+        return res.status(HttpStatus.OK).json({
+            message: 'User has been successfully logged',
+            homeDto
+        });
+    }
+
+    private async getUserProducts(userDto: UserDto): Promise<ProductDto[]> {
+
+        switch (userDto.role) {
+            case 'client':
+                return await this.productsService.findAll();
+            case 'vendor':
+                return await this.productsService.findByVendor(userDto.email);
+            default:
+                return null;
+        }
+    }
 
     @Put(':email')
     async update(@Res() res, @Param('email') email: string, @Body() userEdit: UserDto) {

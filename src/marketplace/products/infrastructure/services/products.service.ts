@@ -72,8 +72,26 @@ export class ProductsService {
     }
 
 
-    async update(email: string, productEdit: ProductDto): Promise<any> {
-        
+    async update(reference: string, productEdit: ProductDto): Promise<any> {
+        var product = await this.repository.findByReference(reference);
+
+        if (productEdit.title && productEdit.title != product.title)
+            product.title = productEdit.title;
+        if (productEdit.reference && productEdit.reference != product.reference)
+            product.reference = productEdit.reference;
+        if (productEdit.description && productEdit.description != product.description)
+            product.description = productEdit.description;
+        if (productEdit.imageUrl && productEdit.imageUrl != product.imageUrl)
+            product.imageUrl = productEdit.imageUrl;
+        if (productEdit.price && productEdit.price != product.price)
+            product.price = productEdit.price;
+        if (productEdit.stock && productEdit.stock != product.stock)
+            product.stock = productEdit.stock;
+        if (productEdit.vendorEmail && productEdit.vendorEmail != product.vendorEmail)
+            product.vendorEmail = productEdit.vendorEmail;
+
+        return await this.repository.update(reference, product);       
+
     }
 
     private async productToProductDto(product: Product): Promise<ProductDto> {
@@ -112,6 +130,8 @@ export class ProductsService {
         return product;
     }
 
-    //delete(reference: string): Promise<any>;
+    async delete(reference: string): Promise<any> {
+        return this.repository.delete(reference);
+    }
 
 }
