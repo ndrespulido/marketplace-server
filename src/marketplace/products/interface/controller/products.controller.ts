@@ -1,7 +1,9 @@
 import { Controller, Post ,Get, Body,Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { ProductsService } from "../../infrastructure/services/products.service";
 import { ProductDto } from "../dto/product.dto";
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController{
     private readonly logger = new Logger(ProductsController.name);

@@ -11,7 +11,6 @@ async function bootstrap() {
         .setTitle('Marketplace')
         .setDescription('POC of Marketplace from the comply Sqad')
         .setVersion('1.0')
-        .addTag('marketplace')
         .build();
 
     const document = SwaggerModule.createDocument(app, options);

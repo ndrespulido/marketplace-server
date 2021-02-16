@@ -1,5 +1,6 @@
 import { Controller, Delete, Get, HttpStatus, Logger, NotFoundException, Post, Put } from '@nestjs/common';
 import { Body, Param, Query, Res } from '@nestjs/common/decorators/http/route-params.decorator';
+import { ApiTags } from '@nestjs/swagger';
 import { ProductsService } from '../../../products/infrastructure/services/products.service';
 import { ProductDto } from '../../../products/interface/dto/product.dto';
 import { User } from '../../../repository/schemas/user.schema';
@@ -8,6 +9,7 @@ import { HomeDto } from '../dto/home.dto';
 import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService, private readonly productsService: ProductsService) { }
