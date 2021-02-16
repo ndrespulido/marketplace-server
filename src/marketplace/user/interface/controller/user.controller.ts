@@ -23,7 +23,25 @@ export class UserController {
         const userExists = await this.userService.findByEmail(user.email);
         if (userExists) {
             return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email already exists. Please login."                
+                message: "Email already exists. Please login."
+            })
+        }
+
+        if (!this.validateRole(user.role)) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Invalid Role."
+            })
+        }
+
+        if (user.role == 'client' && user.client == null) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Please provide Client Information."
+            })
+        }
+
+        if (user.role == 'vendor' && user.vendor == null) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Please provide Vendor Information."
             })
         }
 
@@ -32,6 +50,12 @@ export class UserController {
             message: "User has been created successfully",
             newUser
         })
+    }
+
+    private validateRole(role: string): boolean {
+        if (role == 'client' || role == 'vendor')
+            return true;
+        return false;
     }
 
     @Get()
@@ -50,7 +74,7 @@ export class UserController {
         }
         if (userExists && userExists.password != null && userExists.password != loginDto.password) {
             return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Wrong email password combination."
+                message: "Wrong email and password combination."
             })
         }
 

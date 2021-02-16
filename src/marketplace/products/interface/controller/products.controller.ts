@@ -16,6 +16,18 @@ export class ProductsController{
     @Post()
     async create(@Res() res, @Body() product: ProductDto) {
 
+        if (!product.reference) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Product reference mandatory."
+            })
+        }
+
+        if (!product.vendorEmail) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Vendor mandatory."
+            })
+        }
+
         const productExists = await this.productsService.findByReference(product.reference);
         if (productExists) {
             return res.status(HttpStatus.BAD_REQUEST).json({
