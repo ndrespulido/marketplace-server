@@ -1,5 +1,9 @@
 import { Controller, Post ,Get, Body,Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger} from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { Product } from "../../../repository/schemas/products.schema";
+import { UserService } from "../../../user/infrastructure/services/user.service";
+import { LoginDto } from "../../../user/interface/dto/login.dto";
+import { UserDto } from "../../../user/interface/dto/user.dto";
 import { ProductsService } from "../../infrastructure/services/products.service";
 import { ProductDto } from "../dto/product.dto";
 
@@ -9,8 +13,7 @@ export class ProductsController{
     private readonly logger = new Logger(ProductsController.name);
 
     
-    constructor(private readonly productsService: ProductsService){
-    }
+    constructor(private readonly userService: UserService, private readonly productsService: ProductsService) { }
 
 
     @Post()
@@ -50,9 +53,37 @@ export class ProductsController{
 
     @Get(':reference')
     async findByReference(@Res() res, @Param('reference') reference: string) {
+        this.logger.log('reference:'+reference);
         const product = await this.productsService.findByReference(reference);
         if (!product) throw new NotFoundException('Product not found!');
         return res.status(HttpStatus.OK).json(product);
+    }
+
+
+    @Post('/user')
+    async findById(@Res() res, @Body() loginDto: LoginDto) {
+        const userExists = await this.userService.findByEmail(loginDto.email);
+        if (!userExists || userExists.password != loginDto.password) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Email doesn't exists or password invalid."
+            })
+        }
+        let products: ProductDto[] = null;
+        switch (userExists.role) {
+            case 'client':
+                products = await this.productsService.findAll();
+                break;
+            case 'vendor':
+                products = await this.productsService.findByVendor(userExists.email);
+                break;
+            default:
+                break;;
+        }
+
+        return res.status(HttpStatus.OK).json({
+            message: 'Products for User' + loginDto.email,
+            products
+        });
     }
 
 

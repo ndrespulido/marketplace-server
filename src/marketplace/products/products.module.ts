@@ -8,12 +8,13 @@ import { ProductsController } from './interface/controller/products.controller';
 import { UserSchema, User } from '../repository/schemas/user.schema'
 import { ClientSchema, Client } from '../repository/schemas/client.schema'
 import { VendorSchema, Vendor } from '../repository/schemas/vendor.schema'
+import { UserService } from '../user/infrastructure/services/user.service';
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }, { name: User.name, schema: UserSchema }, { name: Vendor.name, schema: VendorSchema }, { name: Client.name, schema: ClientSchema }])],
     controllers: [ProductsController],
     providers: [{ provide: 'ProductRepositoryInterface', useClass: ProductRepository },
-                { provide: 'UserRepositoryInterface', useClass: UserRepository }, ProductsService]
+    { provide: 'UserRepositoryInterface', useClass: UserRepository }, ProductsService, UserService]
 })
 
 export class ProductsModule {}  

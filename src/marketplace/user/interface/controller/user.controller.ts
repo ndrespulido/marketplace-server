@@ -65,7 +65,6 @@ export class UserController {
 
     @Post('/login')
     async findById(@Res() res, @Body() loginDto: LoginDto) {
-        this.logger.log(loginDto.email + ',' + loginDto.password);
         const userExists = await this.userService.findByEmail(loginDto.email);
         if (!userExists) {
             return res.status(HttpStatus.BAD_REQUEST).json({
@@ -78,14 +77,9 @@ export class UserController {
             })
         }
 
-        let homeDto: HomeDto = {
-            user: userExists,
-            products: await this.getUserProducts(userExists)
-        }
-
         return res.status(HttpStatus.OK).json({
             message: 'User has been successfully logged',
-            homeDto
+            userExists
         });
     }
 
