@@ -20,7 +20,6 @@ export class UserService {
             email: userDto.email,
             password: userDto.password,
             role: userDto.role,
-            username: userDto.username,
         };
 
         const newUser = await this.repository.create(registerUser);
@@ -57,7 +56,6 @@ export class UserService {
         for (let user of userList) {
 
             let userDto: UserDto = {
-                username: user.username,
                 email: user.email,
                 password: user.password,
                 role: user.role,
@@ -99,10 +97,6 @@ export class UserService {
     async findByEmail(email: string): Promise<User> {
         const customer = await this.repository.findByEmail(email);
         return customer;
-    }
-
-    async findOneUser(username:string): Promise<User|undefined>{
-        return await this.userModel.findOne(user => user.username === username).exec();
     }
 
     async login(username, password): Promise<User> {
