@@ -5,6 +5,9 @@ import { VendorDto } from "./vendor.dto";
 export class UserDto {
 
     @IsNotEmpty()
+    readonly username: string;
+
+    @IsNotEmpty()
     readonly email: string;
 
     @IsNotEmpty()
