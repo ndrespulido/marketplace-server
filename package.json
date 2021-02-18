@@ -30,6 +30,7 @@
     "@nestjs/swagger": "^4.7.13",
     "@types/passport": "^1.0.6",
     "bcrypt": "^5.0.0",
+    "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "dotenv": "^8.2.0",
     "express-session": "^1.17.1",
