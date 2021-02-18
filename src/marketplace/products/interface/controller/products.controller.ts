@@ -1,5 +1,6 @@
-import { Controller, Post ,Get, Body,Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger} from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger, UseGuards, Request} from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../../../auth/jwt-auth.guards";
 import { Product } from "../../../repository/schemas/products.schema";
 import { UserService } from "../../../user/infrastructure/services/user.service";
 import { LoginDto } from "../../../user/interface/dto/login.dto";
@@ -47,8 +48,17 @@ export class ProductsController{
     }
 
     @Get()
-    async getProducts(): Promise<ProductDto[]> {
-        return this.productsService.findAll();
+    @UseGuards(JwtAuthGuard)
+    async getProducts(@Request() req: any): Promise<ProductDto[]> {
+        let user: UserDto = req.user;
+        console.log(user.role);
+        if (user.role == 'client')
+            return this.productsService.findAll();
+
+        if (user.role == 'vendor')
+            return this.productsService.findByVendor(user.email);
+
+        return null;
     }
 
     @Get(':reference')

@@ -24,9 +24,11 @@ export class AuthService {
         return null;
     }
 
-    async login(user:any){
-
-        const payload = {username: user.username, sub: user.userId };
-        return { access_token: this.jwtService.sign(payload),expiresIn:authExpireIn};
+    async login(user: any) {
+        console.log('user:'+user);
+        const payload = { username: user }; 
+        //const payload = { username: 'apcastillo@lemonway.com' }; 
+        console.log(payload);
+        return { access_token: this.jwtService.sign(payload), expiresIn: authExpireIn };
     }
 }

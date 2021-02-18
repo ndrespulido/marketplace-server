@@ -13,12 +13,14 @@ export class AppController {
   @Post('auth/login')
   async login(@Request() req)
   {
-    return this.authService.login(req.user);
+      console.log(req.body.username);
+      console.log(req.user._doc);
+      return this.authService.login(req.body.username);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Request() req : any) {
     return req.user;
   }
 
