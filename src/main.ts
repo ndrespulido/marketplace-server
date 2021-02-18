@@ -15,15 +15,8 @@ async function bootstrap() {
         .setTitle('Marketplace')
         .setDescription('POC of Marketplace from the comply Sqad')
         .setVersion('1.0')
+        .addBearerAuth()
         .build();
-
-  const options = new DocumentBuilder()
-    .setTitle('Marketplace')
-    .setDescription('POC of Marketplace from the comply Sqad')
-    .setVersion('1.0')
-    .addTag('marketplace')
-    .addBearerAuth()
-    .build();
         
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);

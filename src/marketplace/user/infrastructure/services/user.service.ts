@@ -120,10 +120,10 @@ export class UserService {
         return await this.userToUserDto(user);
     }
 
-    //async login(username, password): Promise<LoginDto> {
-    //    const customer = await this.userModel.findOne({ username: username, password: password }).exec();
-    //    return customer;
-    //}
+    async login(email, password): Promise<LoginDto> {
+        const customer = await this.repository.findByEmail(email);
+        return customer;
+    }
 
     async update(email, userUpdate: UserDto): Promise<any> {
         const user = await this.userDtoToUser(userUpdate);
