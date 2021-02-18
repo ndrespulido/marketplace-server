@@ -11,12 +11,9 @@ export class AppController {
   constructor(private readonly authService: AuthService) {}
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login
-  //(@Param('username') username: string, @Param('password') password: string)
-  (@Request() req)
+  async login(@Request() req)
   {
-    return this.authService.login//({username: username, userIdb: password })
-    (req.user);
+    return this.authService.login(req.user);
   }
 
   @UseGuards(JwtAuthGuard)

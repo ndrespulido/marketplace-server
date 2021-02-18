@@ -4,6 +4,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '../user/infrastructure/services/user.service';
 import {JwtService} from '@nestjs/jwt';
 
+require("dotenv").config();
+const authExpireIn=process.env.AUTH_EXPIRE_IN;
+
 @Injectable()
 export class AuthService {
 
@@ -24,6 +27,6 @@ export class AuthService {
     async login(user:any){
 
         const payload = {username: user.username, sub: user.userId };
-        return { access_token: this.jwtService.sign(payload),};
+        return { access_token: this.jwtService.sign(payload),expiresIn:authExpireIn};
     }
 }
