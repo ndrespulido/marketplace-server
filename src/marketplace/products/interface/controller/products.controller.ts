@@ -6,6 +6,7 @@ import { UserService } from "../../../user/infrastructure/services/user.service"
 import { LoginDto } from "../../../user/interface/dto/login.dto";
 import { UserDto } from "../../../user/interface/dto/user.dto";
 import { ProductsService } from "../../infrastructure/services/products.service";
+import { NewProductDto } from "../dto/new-product.dto";
 import { ProductDto } from "../dto/product.dto";
 
 @ApiTags('products')
@@ -19,24 +20,11 @@ export class ProductsController{
 
     @Post()
     @UseGuards(JwtAuthGuard)
-    async create(@Request() req: any, @Res() res, @Body() product: ProductDto) {
+    async create(@Request() req: any, @Res() res, @Body() product: NewProductDto) {
 
         if (!product.reference) {
             return res.status(HttpStatus.BAD_REQUEST).json({
                 message: "Product reference mandatory."
-            })
-        }
-
-        if (!product.vendorEmail) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Vendor mandatory."
-            })
-        }
-
-        let user: UserDto = req.user;
-        if (product.vendorEmail != user.email) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Vendor email invalid."
             })
         }
 
@@ -47,7 +35,24 @@ export class ProductsController{
             })
         }
 
-        const newProduct = await this.productsService.create(product);
+        let user: UserDto = req.user;
+        if (user.role!='vendor') {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Client not authorized to create products."
+            })
+        }
+
+        let productDto: ProductDto = {
+            title: product.title,
+            reference: product.reference,
+            description: product.description,
+            imageUrl: product.imageUrl,
+            price: product.price,
+            stock: product.stock,
+            vendorEmail: user.email,
+            vendorName: user.vendor?.companyName
+        }
+        const newProduct = await this.productsService.create(productDto);
 
         return res.status(HttpStatus.OK).json({
             message: "Product has been created successfully",
