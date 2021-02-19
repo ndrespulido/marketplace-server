@@ -10,6 +10,7 @@ import { HomeDto } from '../dto/home.dto';
 import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService, private readonly productsService: ProductsService) { }
@@ -62,38 +63,6 @@ export class UserController {
     async getUsers(): Promise<UserDto[]> {
         return this.userService.findAll();
     }
-
-    //@Post('/login')
-    //async findById(@Res() res, @Body() loginDto: LoginDto) {
-    //    const userExists = await this.userService.findByEmail(loginDto.email);
-    //    if (!userExists) {
-    //        return res.status(HttpStatus.BAD_REQUEST).json({
-    //            message: "Email doesn't exists."
-    //        })
-    //    }
-    //    if (userExists && userExists.password != null && userExists.password != loginDto.password) {
-    //        return res.status(HttpStatus.BAD_REQUEST).json({
-    //            message: "Wrong email and password combination."
-    //        })
-    //    }
-
-    //    return res.status(HttpStatus.OK).json({
-    //        message: 'User has been successfully logged',
-    //        userExists
-    //    });
-    //}
-
-    //private async getUserProducts(userDto: UserDto): Promise<ProductDto[]> {
-
-    //    switch (userDto.role) {
-    //        case 'client':
-    //            return await this.productsService.findAll();
-    //        case 'vendor':
-    //            return await this.productsService.findByVendor(userDto.email);
-    //        default:
-    //            return null;
-    //    }
-    //}
 
     @Put(':email')
     @UseGuards(JwtAuthGuard)
