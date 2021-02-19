@@ -6,6 +6,7 @@ import {AuthService} from './auth.service';
 //import {JwtConstants} from './constants';
 import {JwtStrategy} from './passportStrategies/jwt.strategy';
 import {LocalStrategy} from './local.strategy';
+import { AuthController } from './auth.controller';
 
 require("dotenv").config();
 const authExpireIn=process.env.AUTH_EXPIRE_IN;
@@ -18,6 +19,7 @@ const authSecretJWT=process.env.AUTH_SECRET_JWT;
     })],
 providers:[AuthService,LocalStrategy,JwtStrategy],
 exports:[AuthService],
+controllers: [AuthController],
 })
 
 export class AuthModule{}

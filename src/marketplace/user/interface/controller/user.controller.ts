@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, HttpStatus, Logger, NotFoundException, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, HttpStatus, Logger, NotFoundException, Post, Put, UseGuards, Request } from '@nestjs/common';
 import { Body, Param, Query, Res } from '@nestjs/common/decorators/http/route-params.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../../../auth/jwt-auth.guards';
 import { ProductsService } from '../../../products/infrastructure/services/products.service';
 import { ProductDto } from '../../../products/interface/dto/product.dto';
 import { User } from '../../../repository/schemas/user.schema';
@@ -9,7 +10,6 @@ import { HomeDto } from '../dto/home.dto';
 import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
 
-@ApiTags('user')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService, private readonly productsService: ProductsService) { }
@@ -63,40 +63,49 @@ export class UserController {
         return this.userService.findAll();
     }
 
-    @Post('/login')
-    async findById(@Res() res, @Body() loginDto: LoginDto) {
-        const userExists = await this.userService.findByEmail(loginDto.email);
-        if (!userExists) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email doesn't exists."
-            })
-        }
-        if (userExists && userExists.password != null && userExists.password != loginDto.password) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Wrong email and password combination."
-            })
-        }
+    //@Post('/login')
+    //async findById(@Res() res, @Body() loginDto: LoginDto) {
+    //    const userExists = await this.userService.findByEmail(loginDto.email);
+    //    if (!userExists) {
+    //        return res.status(HttpStatus.BAD_REQUEST).json({
+    //            message: "Email doesn't exists."
+    //        })
+    //    }
+    //    if (userExists && userExists.password != null && userExists.password != loginDto.password) {
+    //        return res.status(HttpStatus.BAD_REQUEST).json({
+    //            message: "Wrong email and password combination."
+    //        })
+    //    }
 
-        return res.status(HttpStatus.OK).json({
-            message: 'User has been successfully logged',
-            userExists
-        });
-    }
+    //    return res.status(HttpStatus.OK).json({
+    //        message: 'User has been successfully logged',
+    //        userExists
+    //    });
+    //}
 
-    private async getUserProducts(userDto: UserDto): Promise<ProductDto[]> {
+    //private async getUserProducts(userDto: UserDto): Promise<ProductDto[]> {
 
-        switch (userDto.role) {
-            case 'client':
-                return await this.productsService.findAll();
-            case 'vendor':
-                return await this.productsService.findByVendor(userDto.email);
-            default:
-                return null;
-        }
-    }
+    //    switch (userDto.role) {
+    //        case 'client':
+    //            return await this.productsService.findAll();
+    //        case 'vendor':
+    //            return await this.productsService.findByVendor(userDto.email);
+    //        default:
+    //            return null;
+    //    }
+    //}
 
     @Put(':email')
-    async update(@Res() res, @Param('email') email: string, @Body() userEdit: UserDto) {
+    @UseGuards(JwtAuthGuard)
+    async update(@Request() req: any, @Res() res, @Param('email') email: string, @Body() userEdit: UserDto) {
+
+        let user: UserDto = req.user;
+        if (email != user.email || userEdit.email != userEdit.email) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User not authorized to edit.'
+            });
+        }
+
         const userResponse = await this.userService.update(email, userEdit);
         if (!userResponse) throw new NotFoundException('username does not exist!');
         return res.status(HttpStatus.OK).json({
@@ -106,7 +115,14 @@ export class UserController {
     }
 
     @Delete(':email')
-    async delete(@Res() res, @Param('email') email: string) {
+    @UseGuards(JwtAuthGuard)
+    async delete(@Request() req: any, @Res() res, @Param('email') email: string) {
+        let user: UserDto = req.user;
+        if (email != user.email) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User not authorized to edit.'
+            });
+        }
         const userResponse = await this.userService.deleteUser(email);
         if (!userResponse) throw new NotFoundException('User does not exist');
         return res.status(HttpStatus.OK).json({

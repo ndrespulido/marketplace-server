@@ -18,7 +18,8 @@ export class ProductsController{
 
 
     @Post()
-    async create(@Res() res, @Body() product: ProductDto) {
+    @UseGuards(JwtAuthGuard)
+    async create(@Request() req: any, @Res() res, @Body() product: ProductDto) {
 
         if (!product.reference) {
             return res.status(HttpStatus.BAD_REQUEST).json({
@@ -29,6 +30,13 @@ export class ProductsController{
         if (!product.vendorEmail) {
             return res.status(HttpStatus.BAD_REQUEST).json({
                 message: "Vendor mandatory."
+            })
+        }
+
+        let user: UserDto = req.user;
+        if (product.vendorEmail != user.email) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: "Vendor email invalid."
             })
         }
 
@@ -51,7 +59,7 @@ export class ProductsController{
     @UseGuards(JwtAuthGuard)
     async getProducts(@Request() req: any): Promise<ProductDto[]> {
         let user: UserDto = req.user;
-        console.log(user.role);
+        
         if (user.role == 'client')
             return this.productsService.findAll();
 
@@ -62,46 +70,28 @@ export class ProductsController{
     }
 
     @Get(':reference')
-    async findByReference(@Res() res, @Param('reference') reference: string) {
-        this.logger.log('reference:'+reference);
+    async findByReference(@Request() req: any, @Res() res, @Param('reference') reference: string) {
+        
         const product = await this.productsService.findByReference(reference);
         if (!product) throw new NotFoundException('Product not found!');
+
         return res.status(HttpStatus.OK).json(product);
     }
 
 
-    @Post('/user')
-    async findById(@Res() res, @Body() loginDto: LoginDto) {
-        const userExists = await this.userService.findByEmail(loginDto.email);
-        if (!userExists || userExists.password != loginDto.password) {
-            return res.status(HttpStatus.BAD_REQUEST).json({
-                message: "Email doesn't exists or password invalid."
-            })
-        }
-        let products: ProductDto[] = null;
-        switch (userExists.role) {
-            case 'client':
-                products = await this.productsService.findAll();
-                break;
-            case 'vendor':
-                products = await this.productsService.findByVendor(userExists.email);
-                break;
-            default:
-                break;;
-        }
-
-        return res.status(HttpStatus.OK).json({
-            message: 'Products for User' + loginDto.email,
-            products
-        });
-    }
-
-
     @Put(':reference')
-    async update(@Res() res, @Param('reference') reference: string, @Body() productEdit: ProductDto) {
-        
+    @UseGuards(JwtAuthGuard)
+    async update(@Request() req: any, @Res() res, @Param('reference') reference: string, @Body() productEdit: ProductDto) {
+
         const product = await this.productsService.findByReference(reference);
         if (!product) throw new NotFoundException('Product not found!');
+
+        let user: UserDto = req.user;
+        if (product.vendorEmail != user.email) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User not authorized to edit this product'
+            });
+        }
 
         const response = await this.productsService.update(reference, productEdit);
 
@@ -113,7 +103,19 @@ export class ProductsController{
     }
 
     @Delete(':reference')
-    async delete(@Res() res, @Param('reference') reference: string) {
+    @UseGuards(JwtAuthGuard)
+    async delete(@Request() req: any, @Res() res, @Param('reference') reference: string) {
+
+        const product = await this.productsService.findByReference(reference);
+        if (!product) throw new NotFoundException('Product not found!');
+
+        let user: UserDto = req.user;
+        if (product.vendorEmail != user.email) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                message: 'User not authorized to delete this product'
+            });
+        }
+
         const response = await this.productsService.delete(reference);
         if (!response) throw new NotFoundException('Product does not exist');
         return res.status(HttpStatus.OK).json({
