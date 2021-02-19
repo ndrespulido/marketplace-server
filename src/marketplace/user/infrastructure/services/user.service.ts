@@ -143,7 +143,6 @@ export class UserService {
     }
 
     async findByPayload({ username }: any): Promise<UserDto> {
-        console.log(username);
         let user = await this.repository.findByEmail(username);
         return this.userToUserDto(user);
     }
