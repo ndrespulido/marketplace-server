@@ -1,10 +1,11 @@
-import { Controller, Post, Get, Body, Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger, UseGuards, Request} from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, Patch, Delete, Res, HttpStatus, NotFoundException, Put, BadRequestException, Logger, UseGuards, Request, UseFilters, HttpException} from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../../auth/jwt-auth.guards";
 import { Product } from "../../../repository/schemas/products.schema";
 import { UserService } from "../../../user/infrastructure/services/user.service";
 import { LoginDto } from "../../../user/interface/dto/login.dto";
 import { UserDto } from "../../../user/interface/dto/user.dto";
+import { ExceptionsLoggerFilter } from "../../../utils/exceptionsLogger.filter";
 import { ProductsService } from "../../infrastructure/services/products.service";
 import { NewProductDto } from "../dto/new-product.dto";
 import { ProductDto } from "../dto/product.dto";
@@ -64,7 +65,7 @@ export class ProductsController{
     @UseGuards(JwtAuthGuard)
     async getProducts(@Request() req: any): Promise<ProductDto[]> {
         let user: UserDto = req.user;
-        
+
         if (user.role == 'client')
             return this.productsService.findAll();
 

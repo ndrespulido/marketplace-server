@@ -6,7 +6,7 @@ import {AuthModule} from './marketplace/auth/auth.module';
 import {AppController} from './app.controller';
 import { JwtAuthGuard } from './marketplace/auth/jwt-auth.guards';
 import { APP_GUARD } from '@nestjs/core';
-
+import { APP_FILTER } from '@nestjs/core'
 import { SetMetadata } from '@nestjs/common';
 
 // export const IS_PUBLIC_KEY = 'isPublic';
