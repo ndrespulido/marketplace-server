@@ -20,18 +20,7 @@ async function bootstrap() {
         
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);
-
-
-  // app.use(
-  //   session({
-  //     secret: 'my-secret',
-  //     resave: false,
-  //     saveUninitialized: false,
-  //     cookie: { secure: false }
-  //   }),
-  // );
-   
-
+    
   await app.listen(port);
   console.log('Start running on: ${await app.getUrl()}');
 }
