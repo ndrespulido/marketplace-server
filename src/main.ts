@@ -1,17 +1,28 @@
 import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
 import { ExceptionsLoggerFilter } from './marketplace/utils/exceptionsLogger.filter';
 
 require("dotenv").config();
 const port=process.env.PORT;
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+
+    console.log('test');
+
+    const app = await NestFactory.createMicroservice(AppModule, {
+      transport: Transport.TCP,
+      options: {
+        host: '0.0.0.0',
+        port,
+      },
+    });
+
+    //const app = await NestFactory.create(AppModule);
     app.useGlobalPipes(new ValidationPipe());
-    app.enableCors();
+    //app.enableCors();
 
     const { httpAdapter } = app.get(HttpAdapterHost);
     app.useGlobalFilters(new ExceptionsLoggerFilter(httpAdapter));
